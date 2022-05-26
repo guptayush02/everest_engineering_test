@@ -1,7 +1,7 @@
 const getCoupon = require("./getCoupon")
 
 exports.isValidNumber = (input) => {
-  if (Number(input)) {
+  if (Number(input) >= 0) {
     return true
   } else {
     return console.log('Please Enter a Valid Number')
