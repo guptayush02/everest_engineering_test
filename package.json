@@ -1,0 +1,15 @@
+{
+  "name": "everest_eng",
+  "version": "1.0.0",
+  "description": "Everest Engineering Test: Command Line Application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ayush",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^9.2.0",
+    "inquirer": "^8.2.4"
+  }
+}
