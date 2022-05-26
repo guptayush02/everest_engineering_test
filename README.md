@@ -1,4 +1,4 @@
-- node version `v16.14.2`
+- Preferred node version `v16.14.2`
 
 - Clone project `https://github.com/guptayush02/everest_engineering_test.git`
 
