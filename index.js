@@ -1,7 +1,7 @@
 const program = require("commander");
 const { prompt } = require("inquirer")
-const { questions } = require("./constants")
-const getCoupon = require("./utils/getCoupon")
+const { questions } = require("./app/constants")
+const getCoupon = require("./app/utils/getCoupon")
 
 program.version("1.0.0").description("Everest Engineering Test: Command Line Application");
 

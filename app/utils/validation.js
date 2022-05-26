@@ -9,9 +9,12 @@ exports.isValidNumber = (input) => {
 }
 
 exports.isValidCoupon = async(input) => {
-  const coupon = await getCoupon(input)
-  if (coupon) {
-    return true
+  if (input) {
+    const coupon = await getCoupon(input)
+    if (coupon) {
+      return true
+    }
+    return console.log("Please Enter A Valid Coupon")
   }
-  return false
+  return true
 }
