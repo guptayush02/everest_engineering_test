@@ -1,4 +1,5 @@
 const { comparePackageByDistance, comparePackageByWeight } = require("./comparePackage")
+const { packagesVehicleAllocation } = require("./packageAllocation")
 
 let finalProductArray = []
 const calculateCost = async(values, i, package, coupon) => {
@@ -29,48 +30,31 @@ const calculateCost = async(values, i, package, coupon) => {
 }
 
 const calculateEstimationTime = (packages, vehicle) => {
+
   packages.forEach((package, key) => {
     package[`estimation_delivery_time${package['key']}_in_hours`] = parseInt(package.distance)/parseInt(vehicle.maxSpeed)
   })
+
   const sortPackageByWeight = packages.sort(comparePackageByWeight)
   const sortPackageByDistance = sortPackageByWeight.sort(comparePackageByDistance)
 
   // Check vehicle availablity
-  // const availableVehicles = checkVehicle(vehicle)
-  // console.log("availableVehicles--->", availableVehicles)
-  // let allotedPackageCount = 0
-  // console.log("sortPackageByDistance---->", sortPackageByDistance)
-  // availableVehicles.forEach((vehicle, key) => {
-  //   sortPackageByDistance.map((package) => {
-  //     package.vehicleId = vehicle.vehicleId
-  //   })
-  // })
-  return sortPackageByDistance
-
+  const availableVehicles = checkVehicle(vehicle)
+  return packagesVehicleAllocation(availableVehicles, sortPackageByDistance)
 }
 
 const checkVehicle = (vehicle) => {
   const availableVehicle = []
+
   for (let i = 0; i < parseInt(vehicle.numberOfVehicles); i ++) {
     const availableVehicleObj = {
       vehicleId: Math.floor(1000 + Math.random() * 9000),
-      ...vehicle,
-      isAlloted: false
+      ...vehicle
     }
     availableVehicle.push({...availableVehicleObj})
   }
-  return availableVehicle
-}
 
-const packagesForVehicleAllocation = (vehicle, packages) => {
-  let total = 0;
-  let index = 0
-  for (let i = 0; i < packages.length; i ++) {
-    total += packages[i].weight;
-    while (total <= parseInt(vehicle.maxCarriableWeight)) {
-      packages[i].vehicleId = vehicle.vehicleId
-    }
-  }
+  return availableVehicle
 }
 
 module.exports = {calculateCost, calculateEstimationTime}
