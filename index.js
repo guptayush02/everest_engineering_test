@@ -1,9 +1,9 @@
 const program = require("commander");
 const { prompt } = require("inquirer")
 const { questions, details, vehiclesDetails } = require("./app/constants")
-const getCoupon = require("./app/utils/getCoupon")
-const { calculateCost, calculateEstimationTime } = require("./app/utils/calculation")
-
+const { calculateEstimationTime } = require("./app/utils/calculation")
+const { checkValues } = require("./app/utils/checkValues")
+const { printPackageOutput } = require("./app/utils/output")
 
 program
   .command("deliveryCostEstimationWithOffers")
@@ -13,7 +13,7 @@ program
     prompt(details).then(async(response) => {
 
       let package = await getFinalPackage(response)
-      printProductCostResult(package)
+      printPackageOutput(package)
     })
   })
 
@@ -28,7 +28,7 @@ program
       if (package && package.length) {
         prompt(vehiclesDetails).then(async(resp) => {
           package = calculateEstimationTime(package, resp)
-          printProductCostResult(package)
+          printPackageOutput(package)
         })
       }
 
@@ -51,20 +51,3 @@ const getFinalPackage = async(response) => {
 }
 
 program.parse(process.argv);
-
-const checkValues = (values, i, package) => {
-  const { coupon: appliedCoupon, numberOfPackage } = values
-  package = {...values}
-  const coupon = getCoupon(appliedCoupon)
-  return calculateCost(values, i, package, coupon)
-}
-
-const printProductCostResult = (finalProductArray) => {
-  return finalProductArray.map((package, key) =>
-  console.log(
-    package.packageId,
-    package.discount,
-    package[`totalCost_${package['key']}`],
-    package[`estimation_delivery_time${package['key']}_in_hours`] ? package[`estimation_delivery_time${package['key']}_in_hours`] : '')
-  )
-}

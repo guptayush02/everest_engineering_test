@@ -13,7 +13,10 @@ exports.isValidCoupon = (input, answers) => {
   if (input) {
     const coupon = getCoupon(input)
     const { minWeight, maxWeight, minDistance, maxDistance, code } = coupon
-    if (coupon && (parseFloat(weight) >= parseFloat(minWeight) && parseFloat(weight) <= parseFloat(maxWeight)) && (parseFloat(distance) >= parseFloat(minDistance) && parseFloat(distance) <= parseFloat(maxDistance))) {
+    if (coupon &&
+      (parseFloat(weight) >= parseFloat(minWeight) && parseFloat(weight) <= parseFloat(maxWeight)) &&
+      (parseFloat(distance) >= parseFloat(minDistance) && parseFloat(distance) <= parseFloat(maxDistance))) {
+
       return true
     }
     return console.log("Offer Not Valid")
