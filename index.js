@@ -1,59 +1,65 @@
 const program = require("commander");
 const { prompt } = require("inquirer")
-const { questions } = require("./app/constants")
+const { questions, details, vehiclesDetails } = require("./app/constants")
 const getCoupon = require("./app/utils/getCoupon")
+const { calculateCost, calculateEstimationTime } = require("./app/utils/calculation")
 
-program.version("1.0.0").description("Everest Engineering Test: Command Line Application");
 
 program
-  .command("getValues")
+  .command("deliveryCostEstimationWithOffers")
   .alias("a")
   .description("Get Input From User")
   .action(() => {
-    prompt(questions).then((response) => {
-      checkValues(response)
+    prompt(details).then(async(response) => {
+      let package = {}
+      let finalPackage
+      for (let i = 0; i < response.numberOfPackage; i ++) {
+        questions.map((q) => q.baseDeliveryCost = response.baseDeliveryCost)
+        await prompt(questions).then(async(res) => {
+          res.baseDeliveryCost = response.baseDeliveryCost
+          res.numberOfPackage = response.numberOfPackage
+          finalPackage = await checkValues(res, i, package)
+        })
+      }
+      printProductCostResult(finalPackage)
+    })
+  })
+
+program
+  .command("calculateEstimationDeliveryTime")
+  .alias("a")
+  .description("Get Input From User")
+  .action(() => {
+    prompt(details).then(async(response) => {
+      let package = {}
+      let finalPackage
+      for (let i = 0; i < response.numberOfPackage; i ++) {
+        questions.map((q) => q.baseDeliveryCost = response.baseDeliveryCost)
+        await prompt(questions).then(async(res) => {
+          res.baseDeliveryCost = response.baseDeliveryCost
+          res.numberOfPackage = response.numberOfPackage
+          finalPackage = await checkValues(res, i, package)
+        })
+      }
+
+      if (finalPackage && finalPackage.length) {
+        prompt(vehiclesDetails).then(async(resp) => {
+          finalPackage = await calculateEstimationTime(finalPackage, resp)
+          printProductCostResult(finalPackage)
+        })
+      }
     })
   })
 
 program.parse(process.argv);
 
-const checkValues = async(values) => {
-  const { coupon: appliedCoupon, weight, distance } = values
-  if (appliedCoupon) {
-    const coupon = await getCoupon(appliedCoupon)
-    const { minWeight, maxWeight, minDistance, maxDistance, code } = coupon
-    if ((parseFloat(weight) >= parseFloat(minWeight) && parseFloat(weight) <= parseFloat(maxWeight)) && (parseFloat(distance) >= parseFloat(minDistance) && parseFloat(distance) <= parseFloat(maxDistance))) {
-      return calculation(values, coupon)
-    } else {
-      console.log(`You Are Not Eligible To Apply Coupon: ${code}`)
-      console.log("Coupon T&C:")
-      console.log(`Min Distance: ${minDistance}`)
-      console.log(`Max Distance: ${maxDistance}`)
-      console.log(`Min Weight: ${minWeight}`)
-      console.log(`Max Weight: ${maxWeight}`)
-      return
-    }
-  } else {
-    return calculation(values)
-  }
+const checkValues = (values, i, package) => {
+  const { coupon: appliedCoupon, numberOfPackage } = values
+  package = {...values}
+  const coupon = getCoupon(appliedCoupon)
+  return calculateCost(values, i, package, coupon)
 }
 
-const calculation = (values, coupon = null) => {
-  const { deliveryCost, weight, distance } = values
-  const totalDeliveryCost = parseFloat(deliveryCost) + (parseFloat(weight) * 10) + (parseFloat(distance) * 5)
-  if (coupon) {
-    const { discountInPersantage } = coupon
-    const totalDiscount = ((parseFloat(discountInPersantage.toFixed(2)) / 100) * parseFloat(totalDeliveryCost))
-    let costAfterDiscount = 0
-    if (parseFloat(totalDeliveryCost) > parseFloat(totalDiscount)) {
-      costAfterDiscount = parseFloat(totalDeliveryCost) - parseFloat(totalDiscount)
-    }
-    console.log(`Total Delivery Cost: ${totalDeliveryCost.toFixed(2)}`)
-    console.log(`Total Discount: -${totalDiscount.toFixed(2)}`)
-    return console.log(`Total Cost After Applying Coupon: ${totalDeliveryCost.toFixed(2)} - ${totalDiscount.toFixed(2)} = ${costAfterDiscount.toFixed(2)}`)
-  } else {
-    console.log(`Total Delivery Cost: ${totalDeliveryCost.toFixed(2)}`)
-    console.log(`Total Delivery Cost: ${totalDeliveryCost.toFixed(2)}`)
-    return console.log(`Total cost: ${totalDeliveryCost.toFixed(2)} - discount ${0} = ${totalDeliveryCost.toFixed(2)}`)
-  }
+const printProductCostResult = (finalProductArray) => {
+  return finalProductArray.map((package, key) => console.log(package.packageId, package.discount, package[`totalCost_${package['key']}`], package[`estimation_delivery_time${package['key']}_in_hours`] ? package[`estimation_delivery_time${package['key']}_in_hours`] : ''))
 }

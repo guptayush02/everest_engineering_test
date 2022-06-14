@@ -4,4 +4,6 @@
 
 - Install dependency `npm install`
 
-- Run `node index.js getValues` to run the project
+- Run `node index.js deliveryCostEstimationWithOffers` to run the project
+
+- Run `node index.js calculateEstimationDeliveryTime` to run the project

@@ -1,11 +1,25 @@
 const { isValidNumber, isValidCoupon } = require("./utils/validation")
 
+exports.details = [
+  {
+    type: "input",
+    name: "baseDeliveryCost",
+    message: "Enter Base Delivery Cost",
+    validate: isValidNumber
+  },
+  {
+    type: "input",
+    name: "numberOfPackage",
+    message: "Enter Total Number Of Package",
+    validate: isValidNumber
+  }
+]
+
 exports.questions = [
   {
     type: "input",
-    name: "deliveryCost",
-    message: "Enter Delivery cost",
-    validate: isValidNumber
+    name: "packageId",
+    message: "Enter Package Id"
   },
   {
     type: "input",
@@ -29,6 +43,7 @@ exports.questions = [
 
 exports.coupons = [
   {
+    id: 1,
     code: "OFR001",
     discountInPersantage: 10,
     minDistance: 0,
@@ -37,6 +52,7 @@ exports.coupons = [
     maxWeight: 200
   },
   {
+    id: 2,
     code: "OFR002",
     discountInPersantage: 7,
     minDistance: 50,
@@ -45,6 +61,7 @@ exports.coupons = [
     maxWeight: 250
   },
   {
+    id: 3,
     code: "OFR003",
     discountInPersantage: 5,
     minDistance: 50,
@@ -52,4 +69,25 @@ exports.coupons = [
     minWeight: 10,
     maxWeight: 150
   }
+]
+
+exports.vehiclesDetails = [
+  {
+    type: "input",
+    name: "numberOfVehicles",
+    message: "Enter Number Of Vehicles",
+    validate: isValidNumber
+  },
+  {
+    type: "input",
+    name: "maxCarriableWeight",
+    message: "Enter Carriable Weight",
+    validate: isValidNumber
+  },
+  {
+    type: "input",
+    name: "maxSpeed",
+    message: "Enter Max Speed",
+    validate: isValidNumber
+  },
 ]

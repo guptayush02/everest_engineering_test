@@ -8,13 +8,15 @@ exports.isValidNumber = (input) => {
   }
 }
 
-exports.isValidCoupon = async(input) => {
+exports.isValidCoupon = (input, answers) => {
+  const { coupon: appliedCoupon, weight, distance } = answers
   if (input) {
-    const coupon = await getCoupon(input)
-    if (coupon) {
+    const coupon = getCoupon(input)
+    const { minWeight, maxWeight, minDistance, maxDistance, code } = coupon
+    if (coupon && (parseFloat(weight) >= parseFloat(minWeight) && parseFloat(weight) <= parseFloat(maxWeight)) && (parseFloat(distance) >= parseFloat(minDistance) && parseFloat(distance) <= parseFloat(maxDistance))) {
       return true
     }
-    return console.log("Please Enter A Valid Coupon")
+    return console.log("Offer Not Valid")
   }
   return true
 }

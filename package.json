@@ -10,6 +10,14 @@
   "license": "ISC",
   "dependencies": {
     "commander": "^9.2.0",
-    "inquirer": "^8.2.4"
+    "https": "^1.0.0",
+    "inquirer": "^8.2.4",
+    "mysql2": "^2.3.3",
+    "node-fetch": "^3.2.4",
+    "request": "^2.88.2",
+    "sequelize": "^6.20.1"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.4.1"
   }
 }
