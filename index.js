@@ -11,17 +11,9 @@ program
   .description("Get Input From User")
   .action(() => {
     prompt(details).then(async(response) => {
-      let package = {}
-      let finalPackage
-      for (let i = 0; i < response.numberOfPackage; i ++) {
-        questions.map((q) => q.baseDeliveryCost = response.baseDeliveryCost)
-        await prompt(questions).then(async(res) => {
-          res.baseDeliveryCost = response.baseDeliveryCost
-          res.numberOfPackage = response.numberOfPackage
-          finalPackage = await checkValues(res, i, package)
-        })
-      }
-      printProductCostResult(finalPackage)
+
+      let package = await getFinalPackage(response)
+      printProductCostResult(package)
     })
   })
 
@@ -31,25 +23,32 @@ program
   .description("Get Input From User")
   .action(() => {
     prompt(details).then(async(response) => {
-      let package = {}
-      let finalPackage
-      for (let i = 0; i < response.numberOfPackage; i ++) {
-        questions.map((q) => q.baseDeliveryCost = response.baseDeliveryCost)
-        await prompt(questions).then(async(res) => {
-          res.baseDeliveryCost = response.baseDeliveryCost
-          res.numberOfPackage = response.numberOfPackage
-          finalPackage = await checkValues(res, i, package)
+      let package = await getFinalPackage(response)
+
+      if (package && package.length) {
+        prompt(vehiclesDetails).then(async(resp) => {
+          package = calculateEstimationTime(package, resp)
+          printProductCostResult(package)
         })
       }
 
-      if (finalPackage && finalPackage.length) {
-        prompt(vehiclesDetails).then(async(resp) => {
-          finalPackage = await calculateEstimationTime(finalPackage, resp)
-          printProductCostResult(finalPackage)
-        })
-      }
     })
   })
+
+const getFinalPackage = async(response) => {
+  let package = {}
+  let finalPackage
+
+  for (let i = 0; i < response.numberOfPackage; i ++) {
+    questions.map((q) => q.baseDeliveryCost = response.baseDeliveryCost)
+    await prompt(questions).then(async(res) => {
+      res.baseDeliveryCost = response.baseDeliveryCost
+      res.numberOfPackage = response.numberOfPackage
+      finalPackage = await checkValues(res, i, package)
+    })
+  }
+  return finalPackage
+}
 
 program.parse(process.argv);
 
